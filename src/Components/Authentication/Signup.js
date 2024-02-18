@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -7,7 +7,7 @@ const Signup = () => {
   const [confirmPassword, setConfimrPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -42,7 +42,7 @@ const Signup = () => {
       if (res.ok) {
         setLoading(false);
         // const data= await res.json()
-        //   navigate("/login");
+          navigate("/login");
         console.log("User registered successfully");
       } else {
         const data = await res.json(); //in case the POST method fails, catch the response like this
@@ -61,7 +61,8 @@ const Signup = () => {
     alert("signup done");
   };
   return (
-    <div className="container form-control "
+    <div
+      className="container form-control "
       style={{
         marginTop: "50px",
         width: "400px",
@@ -72,7 +73,8 @@ const Signup = () => {
     >
       <h2 style={{ textAlign: "center" }}>SignUp</h2>
       <form onSubmit={handleSignup}>
-        <input className=" mt-2 form-control  "
+        <input
+          className=" mt-2 form-control  "
           type="email"
           placeholder="Enter email"
           value={email}
@@ -80,7 +82,8 @@ const Signup = () => {
           required
         />
 
-        <input className=" mt-2 form-control "
+        <input
+          className=" mt-2 form-control "
           type="password"
           placeholder="Password"
           value={password}
@@ -88,7 +91,8 @@ const Signup = () => {
           required
         />
 
-        <input className=" form-control mt-2 "
+        <input
+          className=" form-control mt-2 "
           type="password"
           placeholder="Confirm Password"
           value={confirmPassword}
