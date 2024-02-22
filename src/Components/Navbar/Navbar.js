@@ -12,6 +12,7 @@ const Navbar = () => {
     dispatch(authAction.logout());
     localStorage.removeItem("email");
     localStorage.removeItem("token");
+    localStorage.removeItem("numberOfMails")
     navigate("/login");
   };
   return (

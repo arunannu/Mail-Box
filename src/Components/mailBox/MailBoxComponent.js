@@ -8,7 +8,7 @@ const MailBoxComponent = () => {
   const [subject, setSubject] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [mailBody, setMailBody] = useState("");
-  console.log(mailBody);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setMailBody(editorState.getCurrentContent().getPlainText());
@@ -17,15 +17,17 @@ const MailBoxComponent = () => {
   const senderEmail = localStorage.getItem("email");
 
   const handleSend = async () => {
+    setLoading(true)
+    const changedSenderMail= senderEmail.replace(/[@.]/g, "")
     const mailData = {
-      email: to,
+      to: to,
       subject: subject,
       message: mailBody,
     };
 
     try {
       const response = await fetch(
-        `https://mail-box-c3328-default-rtdb.firebaseio.com//${senderEmail}SentMail.json`,
+        `https://mail-box-c3328-default-rtdb.firebaseio.com//${changedSenderMail}SentMail.json`,
         {
           method: "POST",
           body: JSON.stringify(mailData),
@@ -39,9 +41,32 @@ const MailBoxComponent = () => {
     } catch (err) {
       console.log(err);
     }
+    
+    try {
+      const mail = to.replace(/[@.]/g, "");
+      const response = await fetch(
+        `https://mail-box-c3328-default-rtdb.firebaseio.com//${mail}Inbox.json`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            from: senderEmail,
+            subject: subject,
+            message: mailBody,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      let data = await response;
+      console.log(data);
+      setLoading(false)
+    } catch (err) {
+      alert(err);
+    }
     setTo("");
     setSubject("");
-    setMailBody("");
+    setEditorState(EditorState.createEmpty());
   };
 
   return (

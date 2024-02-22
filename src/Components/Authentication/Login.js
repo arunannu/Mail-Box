@@ -41,8 +41,10 @@ const Login = () => {
         setLoading(false);
         const data= await res.json();
         dispatch(authAction.login(data.idToken));
-        localStorage.setItem("email", data.email.replace(/[@.]/g, ""));
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("numberOfEmails",0);
         localStorage.setItem("token", data.idToken);
+
         console.log("User LoggedIn successfully");
           navigate("/home");
         
