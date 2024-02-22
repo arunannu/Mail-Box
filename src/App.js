@@ -1,17 +1,24 @@
 import Login from "./Components/Authentication/Login";
 import Home from "./Components/Authentication/Home";
 import Signup from "./Components/Authentication/Signup";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Navbar from "./Components/Navbar/Navbar";
+import { Routes, Route} from "react-router-dom";
+import MailBoxComponent from "./Components/mailBox/MailBoxComponent";
 function App() {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  console.log(isLoggedIn);
+  // const Navigate = useNavigate()
   return (
     <div>
-      <Router>
-        <Routes>
-          <Route path="login" element={<Login />}></Route>
-          <Route path="signup" element={<Signup />} />
-          <Route path="/" element={<Home/>}/>
-        </Routes>
-      </Router>
+      <Navbar />
+      <Routes>
+       {isLoggedIn && <Route path="mail-box" element={<MailBoxComponent />} />}
+        {!isLoggedIn && <Route path="login" element={<Login />}></Route>}
+       {! isLoggedIn && <Route path="/" element={<Signup />} />}
+       {isLoggedIn && <Route path="home" element={<Home />} />}
+        {/* <Route path='*' element={<Navigate to='/login'/>}/> */}
+      </Routes>
     </div>
   );
 }

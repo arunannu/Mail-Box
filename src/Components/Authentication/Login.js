@@ -1,31 +1,29 @@
 import React, { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { authAction } from "../store/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfimrPassword] = useState("");
+  
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSignup = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!email || !password || !confirmPassword) {
+    if (!email || !password) {
       setError("All fields are mandatory!!");
       return;
     }
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      setPassword("");
-      setConfimrPassword("");
-      return;
-    }
+    
     setLoading(true);
     try {
       const res = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=AIzaSyBZl7llsSe5RE9ERRycypTVA9HqNb7nU3g",
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBZl7llsSe5RE9ERRycypTVA9HqNb7nU3g",
         {
           method: "POST",
           body: JSON.stringify({
@@ -41,9 +39,13 @@ const Login = () => {
 
       if (res.ok) {
         setLoading(false);
-        // const data= await res.json()
-          navigate("/");
-        console.log("User registered successfully");
+        const data= await res.json();
+        dispatch(authAction.login(data.idToken));
+        localStorage.setItem("email", data.email.replace(/[@.]/g, ""));
+        localStorage.setItem("token", data.idToken);
+        console.log("User LoggedIn successfully");
+          navigate("/home");
+        
       } else {
         const data = await res.json(); //in case the POST method fails, catch the response like this
         if (data && data.error.message) {
@@ -57,22 +59,22 @@ const Login = () => {
     }
     setEmail("");
     setPassword("");
-    setConfimrPassword("");
+    
     alert("Login done");
   };
   return (
     <div
       className="container form-control "
       style={{
-        marginTop: "50px",
-        width: "400px",
+        marginTop: "40px",
+        width: "600px",
         border: "2px solid black",
         borderRadius: "20px",
         backgroundColor: "grey",
       }}
     >
       <h2 style={{ textAlign: "center" }}>Login</h2>
-      <form onSubmit={handleSignup}>
+      <form onSubmit={handleLogin}>
         <input
           className=" mt-2 form-control  "
           type="email"
@@ -94,17 +96,18 @@ const Login = () => {
         
 
         <div className="mt-2 text-center">
-          <button className="btn btn-primary form-control " size="sm">
+          { !loading && <button className="btn btn-primary form-control " size="sm">
             Login
-          </button>
+          </button>}
         </div>
       </form>
       <p className=" text-center mt-2  ">
-        <Link to="/signup">Don't Have Account? SignUp Now!!</Link>
+        <Link to="/">Don't Have Account? SignUp Now!!</Link>
       </p>
       <p className=" text-center mt-2  ">
         <Link to="/forgetPassword">Forget Password?</Link>
       </p>
+      {error}
 
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link ,useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -42,7 +42,7 @@ const Signup = () => {
       if (res.ok) {
         setLoading(false);
         // const data= await res.json()
-          navigate("/login");
+        navigate("/login");
         console.log("User registered successfully");
       } else {
         const data = await res.json(); //in case the POST method fails, catch the response like this
@@ -65,7 +65,7 @@ const Signup = () => {
       className="container form-control "
       style={{
         marginTop: "50px",
-        width: "400px",
+        width: "600px",
         border: "2px solid black",
         borderRadius: "20px",
         backgroundColor: "grey",
@@ -101,14 +101,17 @@ const Signup = () => {
         />
 
         <div className="mt-2 text-center">
-          <button className="btn btn-primary form-control " size="sm">
-            SignUp
-          </button>
+          {!loading && (
+            <button className="btn btn-primary form-control " size="sm">
+              SignUp
+            </button>
+          )}
         </div>
       </form>
       <p className=" text-center ">
         <Link to="/login">Have an account?Login</Link>
       </p>
+      {error}
     </div>
   );
 };
