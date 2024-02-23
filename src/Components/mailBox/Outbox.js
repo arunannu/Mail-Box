@@ -1,57 +1,38 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Card, ListGroup, Spinner, Button } from "react-bootstrap";
+import { Button, Card, ListGroup, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { mailActions } from "../store/mailSlice";
 import { Link } from "react-router-dom";
-
-const Inbox = () => {
-  const [loading, setLoading] = useState(false);
+const Outbox = () => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.email.recieved);
-  console.log(data);
-
+  const data = useSelector((state) => state.email.sent);
+  const [loading, setLoading] = useState(false);
   const email = localStorage.getItem("email");
-  const changedMail = email.replace(/[@.]/g, "");
-  localStorage.setItem("numberOfMails", data.length);
-
+  const mail = email.replace(/[@.]/g, "");
   const getData = useCallback(async () => {
     try {
       setLoading(true);
       let res = await fetch(
-        `https://mail-box-c3328-default-rtdb.firebaseio.com//${changedMail}Inbox.json`
+        `https://mail-box-client-3e379-default-rtdb.firebaseio.com//${mail}SentMail.json`
       );
       let data = await res.json();
-      console.log(data);
       let arr = [];
-      let unreadMails = 0;
       console.log(data);
-
-      for (let i in data) {
-        if (data[i].read === false) {
-          unreadMails++;
-        }
-        const id = i;
-        arr = [{ id: id, ...data[i] }, ...arr];
-        dispatch(mailActions.recievedMail([...arr]));
-        dispatch(mailActions.unreadMessage(unreadMails));
+      for (let key in data) {
+        const id = key;
+        arr = [{ id: id, ...data[key] }, ...arr];
+        dispatch(mailActions.sentMail([...arr]));
         setLoading(false);
       }
     } catch (err) {
       console.log(err);
       setLoading(false);
     }
-  }, [changedMail, dispatch]);
-
-  useEffect(() => {
-    getData();
-  }, [getData]);
+  }, [mail, dispatch]);
   const DeleteHandler = async (id) => {
     console.log(id);
-    const mail = data.filter((item) => item.id === id);
-    dispatch(mailActions.deleteMail(mail));
-    console.log(mail);
     const res = await fetch(
-      `https://mail-box-c3328-default-rtdb.firebaseio.com//${changedMail}Inbox/${id}.json`,
+      `https://mail-box-client-3e379-default-rtdb.firebaseio.com//${mail}SentMail/${id}.json`,
       {
         method: "DELETE",
         headers: {
@@ -59,22 +40,23 @@ const Inbox = () => {
         },
       }
     );
-
-    let response = await res;
-    console.log(response);
+    let data = await res;
+    console.log(data);
     getData();
   };
-
+  useEffect(() => {
+    getData();
+  }, [getData]);
   return (
     <>
       <Card bg="light">
         <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
-          Inbox
+          Sent Mails
         </h2>
         <ListGroup>
           {data.length === 0 && (
             <h5 style={{ textAlign: "center", margin: "1rem auto" }}>
-              No Mails in Inbox!!
+              No Mails in Outbox!!
             </h5>
           )}
           {loading && data.length > 0 && <Spinner />}
@@ -98,18 +80,10 @@ const Inbox = () => {
                       color: "white",
                       alignItems: "center",
                     }}
-                    to={`/inbox/${data[email].id}`}
+                    to={`/outbox/${data[email].id}`}
                   >
-                    {data[email].read === false && (
-                      <p
-                        className="mt-3 me-3 ms-0"
-                        style={{ marginRight: "10px", float: "left" }}
-                      >
-                        🟢
-                      </p>
-                    )}{" "}
                     <span style={{ textDecoration: "none", color: "white" }}>
-                      <b>From:</b> {data[email].from}
+                      <b>To:</b> {data[email].to}
                     </span>{" "}
                     <span>({data[email].time})</span>
                     <br />
@@ -134,5 +108,4 @@ const Inbox = () => {
     </>
   );
 };
-
-export default Inbox;
+export default Outbox;

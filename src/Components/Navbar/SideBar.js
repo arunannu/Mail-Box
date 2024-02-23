@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import {  Button } from "react-bootstrap";
 import MailBoxComponent from "../mailBox/MailBoxComponent";
 import { BiMailSend, BiTrash } from "react-icons/bi";
 import { TbMailPlus, TbMailOpenedFilled } from "react-icons/tb";
@@ -11,16 +12,17 @@ import {
   CDBSidebarContent,
   CDBSidebarMenu,
   CDBSidebarMenuItem,
-  CDBSidebarFooter,
   CDBBadge,
 } from "cdbreact";
-
 const Sidebar = () => {
   const [modalShow, setModalShow] = useState(false);
   const [mailCount, setMailCount] = useState(0);
   const email = localStorage.getItem("email");
   // const inboxMails = localStorage.getItem("numberOfMails");
   const inboxMails = useSelector((state) => state.email.unreadMails);
+  const outbox = useSelector((state) => state.email.sent);
+  const outboxMails = outbox.length;
+  console.log(outboxMails);
   useEffect(() => {
     setMailCount(inboxMails);
   }, [email, inboxMails]);
@@ -38,18 +40,18 @@ const Sidebar = () => {
       >
         <CDBSidebar>
           <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large" />}>
-            <button
+            <Button
               variant="outline-primary"
               onClick={() => setModalShow(true)}
             >
               Compose <TbMailPlus />
-            </button>
+            </Button>
           </CDBSidebarHeader>
           <CDBSidebarContent>
             <CDBSidebarMenu>
               <CDBSidebarMenuItem
                 suffix={
-                  <CDBBadge color="danger" size="small" borderType="pill">
+                  <CDBBadge color="success" size="small" borderType="pill">
                     {mailCount}
                   </CDBBadge>
                 }
@@ -58,12 +60,19 @@ const Sidebar = () => {
                   <RiMailUnreadFill /> Inbox
                 </Link>
               </CDBSidebarMenuItem>
-              <CDBSidebarMenuItem suffix={<CDBBadge>4</CDBBadge>}>
-                <TbMailOpenedFilled />
-                <Link to="/openMails">All Mails</Link>
+              <CDBSidebarMenuItem suffix={<CDBBadge size="small">4</CDBBadge>}>
+                <TbMailOpenedFilled /> All Mails
               </CDBSidebarMenuItem>
-              <CDBSidebarMenuItem>
-                <BiMailSend /> Outbox
+              <CDBSidebarMenuItem
+                suffix={
+                  <CDBBadge color="danger" size="small" borderType="pill">
+                    {outboxMails}
+                  </CDBBadge>
+                }
+              >
+                <Link to="/outbox">
+                  <BiMailSend /> Outbox
+                </Link>
               </CDBSidebarMenuItem>
               <CDBSidebarMenuItem>
                 <Link to="/inbox/deletedMails/:id">
@@ -72,14 +81,6 @@ const Sidebar = () => {
               </CDBSidebarMenuItem>
             </CDBSidebarMenu>
           </CDBSidebarContent>
-          <CDBSidebarFooter style={{ textAlign: "center" }}>
-            <div
-              className="sidebar-btn-wrapper"
-              style={{ padding: "20px 5px" }}
-            >
-              Sidebar Footer
-            </div>
-          </CDBSidebarFooter>
         </CDBSidebar>
       </div>
     </>

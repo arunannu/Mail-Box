@@ -2,12 +2,8 @@ import React from 'react'
 import { Card, ListGroup, Button } from "react-bootstrap";
 import {  useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-
-
 const DeletedMails = () => {
-
     const data = useSelector((state)=> state.email.trash);
-
   return (
     <>
     <Card bg="light">
@@ -56,5 +52,4 @@ const DeletedMails = () => {
   </>
   )
 }
-
 export default DeletedMails

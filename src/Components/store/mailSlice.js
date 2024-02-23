@@ -22,6 +22,7 @@ const mailSlice = createSlice({
     deleteMail(state, action){
       state.trash.push(action.payload);
     }
+   
   },
 });
 export const mailActions = mailSlice.actions;

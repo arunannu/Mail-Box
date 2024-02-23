@@ -2,18 +2,15 @@ import React, { useState, useEffect } from "react";
 import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-
 const MailBoxComponent = () => {
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [mailBody, setMailBody] = useState("");
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     setMailBody(editorState.getCurrentContent().getPlainText());
   }, [editorState]);
-
   const senderEmail = localStorage.getItem("email");
   const formatDate = (date) => {
     const year = date.getFullYear();
@@ -22,7 +19,6 @@ const MailBoxComponent = () => {
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
     const seconds = String(date.getSeconds()).padStart(2, "0");
-
     return `${day}/${month}/${year} - ${hours}:${minutes}:${seconds}`;
   };
   const formattedDate = formatDate(new Date());
@@ -92,10 +88,8 @@ const MailBoxComponent = () => {
       className="container border border-dark bg-body-tertiary"
       style={{
         display: "flex",
-
         width: "850px",
         height: "auto",
-
         float: "right",
       }}
     >
@@ -118,7 +112,6 @@ const MailBoxComponent = () => {
             onChange={(e) => setSubject(e.target.value)}
           />
         </div>
-
         <Editor
           editorState={editorState}
           onEditorStateChange={setEditorState}
