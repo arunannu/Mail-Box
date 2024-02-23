@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { useSelector } from "react-redux";
 import MailBoxComponent from "../mailBox/MailBoxComponent";
 import { BiMailSend, BiTrash } from "react-icons/bi";
 import { TbMailPlus, TbMailOpenedFilled } from "react-icons/tb";
@@ -17,7 +17,9 @@ import {
 
 const Sidebar = () => {
   const [modalShow, setModalShow] = useState(false);
-  const inboxMails = localStorage.getItem("numberOfMails");
+  // const inboxMails = localStorage.getItem("numberOfMails");
+  const inboxMails = useSelector((state) => state.email.unreadMails);
+  console.log(inboxMails);
 
   return (
     <>
@@ -48,14 +50,13 @@ const Sidebar = () => {
                   </CDBBadge>
                 }
               >
-                {" "}
-                <Link to="inbox">
+                <Link to="/inbox">
                   <RiMailUnreadFill /> Inbox
                 </Link>
               </CDBSidebarMenuItem>
               <CDBSidebarMenuItem suffix={<CDBBadge>4</CDBBadge>}>
-                {" "}
-                <TbMailOpenedFilled /> All Mails
+                <TbMailOpenedFilled />
+                <Link to="/openMails">All Mails</Link>
               </CDBSidebarMenuItem>
               <CDBSidebarMenuItem>
                 <BiMailSend /> Outbox

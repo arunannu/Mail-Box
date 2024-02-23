@@ -1,12 +1,14 @@
 import React from "react";
 
 import SideBar from "../Navbar/SideBar";
-import Inbox from "../mailBox/Inbox";
+
+
 
 const Home = () => {
   return (
     <div>
-      <Inbox/>
+     
+     
       <h3 className=" m-2 text-center">Welcome to Mail Box...</h3>
       <SideBar />
       

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { authAction } from "../store/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Login = () => {
       setError("All fields are mandatory!!");
       return;
     }
-    
+
     setLoading(true);
     try {
       const res = await fetch(
@@ -39,15 +39,14 @@ const Login = () => {
 
       if (res.ok) {
         setLoading(false);
-        const data= await res.json();
+        const data = await res.json();
         dispatch(authAction.login(data.idToken));
         localStorage.setItem("email", data.email);
-        localStorage.setItem("numberOfEmails",0);
+        localStorage.setItem("numberOfEmails", 0);
         localStorage.setItem("token", data.idToken);
 
         console.log("User LoggedIn successfully");
-          navigate("/home");
-        
+        navigate("/home");
       } else {
         const data = await res.json(); //in case the POST method fails, catch the response like this
         if (data && data.error.message) {
@@ -61,7 +60,7 @@ const Login = () => {
     }
     setEmail("");
     setPassword("");
-    
+
     alert("Login done");
   };
   return (
@@ -95,22 +94,23 @@ const Login = () => {
           required
         />
 
-        
-
         <div className="mt-2 text-center">
-          { !loading && <button className="btn btn-primary form-control " size="sm">
-            Login
-          </button>}
+          {!loading && (
+            <button className="btn  btn-secondary form-control " size="sm">
+              Login
+            </button>
+          )}
         </div>
       </form>
       <p className=" text-center mt-2  ">
-        <Link to="/">Don't Have Account? SignUp Now!!</Link>
+        Don't Have Account?
+        <Link to="/"> SignUp Now!!</Link>
       </p>
-      <p className=" text-center mt-2  ">
+      <p className=" text-center mt-2 ">
         <Link to="/forgetPassword">Forget Password?</Link>
       </p>
+    
       {error}
-
     </div>
   );
 };

@@ -8,21 +8,35 @@ const MailBoxComponent = () => {
   const [subject, setSubject] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [mailBody, setMailBody] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setMailBody(editorState.getCurrentContent().getPlainText());
   }, [editorState]);
 
   const senderEmail = localStorage.getItem("email");
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
 
+    return `${day}/${month}/${year} - ${hours}:${minutes}:${seconds}`;
+  };
+  const formattedDate = formatDate(new Date());
   const handleSend = async () => {
-    setLoading(true)
-    const changedSenderMail= senderEmail.replace(/[@.]/g, "")
+    setLoading(true);
+    const changedSenderMail = senderEmail.replace(/[@.]/g, "");
     const mailData = {
       to: to,
       subject: subject,
       message: mailBody,
+      read: true,
+      time: formattedDate,
+      send: true,
+      receive: false,
     };
 
     try {
@@ -41,7 +55,7 @@ const MailBoxComponent = () => {
     } catch (err) {
       console.log(err);
     }
-    
+
     try {
       const mail = to.replace(/[@.]/g, "");
       const response = await fetch(
@@ -52,6 +66,10 @@ const MailBoxComponent = () => {
             from: senderEmail,
             subject: subject,
             message: mailBody,
+            read: false,
+            time: formattedDate,
+            send: false,
+            receive: true,
           }),
           headers: {
             "Content-Type": "application/json",
@@ -60,7 +78,7 @@ const MailBoxComponent = () => {
       );
       let data = await response;
       console.log(data);
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
       alert(err);
     }
