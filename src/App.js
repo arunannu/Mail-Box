@@ -2,6 +2,7 @@ import Login from "./Components/Authentication/Login";
 import Home from "./Components/Authentication/Home";
 import Signup from "./Components/Authentication/Signup";
 import { useSelector } from "react-redux";
+import DeletedMails from "./Components/mailBox/DeletedMails";
 import { Profile } from "./Components/Navbar/Profile";
 import Navbar from "./Components/Navbar/Navbar";
 import { Routes, Route } from "react-router-dom";
@@ -20,6 +21,7 @@ function App() {
         <Route path="mail-box" element={<MailBoxComponent />} />
         <Route path="profile" element={<Profile/>}/>
         <Route path="login" element={<Login />}></Route>
+        <Route path="/inbox/deletedMails/:id" element={<DeletedMails/>}/>
         <Route path="inbox" element={<Inbox />} />
         <Route path="openMails" element={<OpenMails />} />
         <Route path="/" element={<Signup />} />

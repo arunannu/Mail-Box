@@ -45,6 +45,25 @@ const Inbox = () => {
   useEffect(() => {
     getData();
   }, [getData]);
+  const DeleteHandler = async (id) => {
+    console.log(id);
+    const mail = data.filter((item) => item.id === id);
+    dispatch(mailActions.deleteMail(mail));
+    console.log(mail);
+    const res = await fetch(
+      `https://mail-box-c3328-default-rtdb.firebaseio.com//${changedMail}Inbox/${id}.json`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    let response = await res;
+    console.log(response);
+    getData();
+  };
 
   return (
     <>
@@ -97,7 +116,14 @@ const Inbox = () => {
                       {data[email].subject}
                     </span>
                   </Link>
-                  <Button>Delete</Button>
+                  <Button
+                    onClick={() => DeleteHandler(data[email].id)}
+                    key={data[email].id}
+                    style={{ float: "right" }}
+                    variant="danger"
+                  >
+                    Delete
+                  </Button>
                 </ListGroup.Item>
               );
             })}
